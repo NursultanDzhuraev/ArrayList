@@ -12,6 +12,8 @@ import service.impl.ReaderServiceImpl;
 
 import java.util.*;
 
+import static models.Database.readersBase;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -36,9 +38,8 @@ public class Main {
                 new Library("Республиканская Библиотека ", "24 ул. Киевский"),
                 new Library("Библиотека ", "42 ул. Манас")
         ));
-//        List<Library> libraryList = new ArrayList<>(Arrays.asList(
-//                addLibrary(new Library())
-//        ));
+        List<Reader> readers = new ArrayList<>();
+
 
         while (true) {
             System.out.println("""
@@ -49,7 +50,7 @@ public class Main {
                     4 updateLibrary
                     5 deleteLibrary
                     6 saveBook
-                    7 getAllBooks
+                    7 getAllBooksLibrary
                     8 getBookById
                     9 deleteBook
                     10 clearBooksByLibraryId
@@ -86,9 +87,9 @@ public class Main {
                     libraryService.deleteLibrary(idLibrary);
                 }
                 case 6 -> {
-                    System.out.print("Enter book id: ");
-                    Long bookId = scanForNumber.nextLong();
-                    bookService.saveBook(bookId, addBook(new Book()));
+                    System.out.print("Enter library id: ");
+                    Long libraryId = scanForNumber.nextLong();
+                    bookService.saveBook(libraryId, addBook(new Book()));
                 }
                 case 7 -> {
                     System.out.print("Enter Library id: ");
@@ -105,7 +106,9 @@ public class Main {
                 case 9 -> {
                     System.out.print("Enter Library id: ");
                     Long libraryId = scanForNumber.nextLong();
-                    bookService.saveBook(libraryId, addBook(new Book()));
+                    System.out.print("Enter book id: ");
+                    Long bookId = scanForNumber.nextLong();
+                    bookService.deleteBook(libraryId,bookId);
                 }
                 case 10 -> {
                     System.out.print("Enter Library id: ");
@@ -126,7 +129,7 @@ public class Main {
                 case 14 -> {
                     System.out.print("Enter reader id: ");
                     Long readerId = scanForNumber.nextLong();
-                   readerService.updateReader(readerId,addReader(new Reader()));
+                    readerService.updateReader(readerId, addReader(new Reader()));
                 }
                 case 15 -> {
                     System.out.print("Enter reader id: ");
@@ -158,33 +161,46 @@ public class Main {
     }
 
     public static Library addLibrary(Library library) {
+//        List<Book> book1 = new ArrayList<>(List.of(new Book("a","a",Genre.HISTORICAL)));
+//        List<Reader> reader1 = new ArrayList<>(List.of(new Reader("a","a","a",Gender.MAN)));
         System.out.print("Enter library name: ");
         library.setName(scanForStr.nextLine());
         System.out.print("Enter library address: ");
         library.setAddress(scanForStr.nextLine());
-        System.out.println("Enter ");
-
+        library.setBooks(new ArrayList<>());
+        library.setReaders(new ArrayList<>());
         return library;
     }
 
     public static Book addBook(Book book) {
-        System.out.print("Enter book name: ");
+      try {  System.out.print("Enter book name: ");
         book.setName(scanForStr.nextLine());
         System.out.print("Enter book author: ");
         book.setAuthor(scanForStr.nextLine());
         System.out.print("Enter book Genre(ROMANCE,FANTASY,HISTORICAL): ");
-        book.setGenre(Genre.valueOf(scanForStr.nextLine()));
+        book.setGenre(Genre.valueOf(scanForStr.nextLine().toUpperCase()));
+    } catch (IllegalArgumentException e) {
+        System.err.println("Invalid genre entered. Please enter one of the following: ROMANCE, FANTASY, HISTORICAL.");
+    } catch (Exception e) {
+        System.err.println("An unexpected error occurred: " + e.getMessage());
+    }
         return book;
     }
-    public static Reader addReader(Reader reader){
-        System.out.print("Enter reader full name: ");
+
+    public static Reader addReader(Reader reader) {
+     try {   System.out.print("Enter reader full name: ");
         reader.setFullName(scanForStr.nextLine());
         System.out.print("Enter reader email: ");
         reader.setEmail(scanForStr.nextLine());
         System.out.print("Enter reader phone number: ");
         reader.setPhoneNumber(scanForStr.nextLine());
         System.out.print("Enter reader gender (MAN,WOMAN): ");
-        reader.setGender(Gender.valueOf(scanForStr.nextLine()));
+        reader.setGender(Gender.valueOf(scanForStr.nextLine().toUpperCase()));
+    } catch (IllegalArgumentException e) {
+        System.err.println("Invalid gender entered. Please enter either MAN or WOMAN.");
+    } catch (Exception e) {
+        System.err.println("An unexpected error occurred: " + e.getMessage());
+    }
         return reader;
     }
 

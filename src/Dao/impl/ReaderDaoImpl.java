@@ -5,38 +5,41 @@ import models.Database;
 import models.Library;
 import models.Reader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static models.Database.libraries;
-import static models.Database.readers;
+import static models.Database.readersBase;
 
 
 public class ReaderDaoImpl implements ReaderDao {
 
     @Override
     public void saveReader(Reader reader) {
-        readers.add(reader);
-        System.out.println("Successful delete");
+        readersBase.add(reader);
+
+
+        System.out.println("Successful save: ");
     }
 
     @Override
     public List<Reader> getAllReaders() {
-        return readers;
+        return readersBase;
     }
 
     @Override
     public Reader getReaderById(Long id) {
-        for (Reader reader : readers) {
-            if (reader.getId().equals(id))
-                return reader;
-            else System.err.println("not found " + id);
+        for (Reader reader : readersBase) {
+            if (reader.getId().equals(id)){
+                System.out.println(reader);}
+            else{ System.err.println("not found " + id);}
         }
         return null;
     }
 
     @Override
     public Reader updateReader(Long id, Reader reader) {
-        for (Reader reader1 : readers) {
+        for (Reader reader1 : readersBase) {
             if (reader1.getId().equals(id))
                 reader1.setEmail(reader.getEmail());
             reader1.setGender(reader.getGender());
@@ -48,10 +51,13 @@ public class ReaderDaoImpl implements ReaderDao {
 
     @Override
     public void assignReaderToLibrary(Long readerId, Long libraryId) {
-        for (Reader reader : readers) {
+        for (Reader reader : readersBase) {
             if (reader.getId().equals(readerId)){
                 for (Library library : libraries) {
                     if (library.getId().equals(libraryId)){
+                        if (library.getReaders() == null) {
+                            library.setReaders(new ArrayList<>());
+                        }
                         library.getReaders().add(reader);
                     }
                 }

@@ -9,7 +9,7 @@ public class Book {
     private String name;
     private String author;
     private Genre genre;
-    private static long generateId = 0;
+    private static long generateId = 1;
 
     public Book() {
         this.id = generateId++;

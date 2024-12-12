@@ -8,7 +8,7 @@ public class Reader {
   private String email;
   private String phoneNumber;
   private Gender gender;
-  private static long generateId = 0;
+  private static long generateId = 1;
 
   public Reader() {
     this.id = generateId++;
